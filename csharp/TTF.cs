@@ -29,10 +29,12 @@ namespace odttf2ttf
             string fontName = GetFontName(fontData);
             string outputFileName = fontName + ".ttf";
 
-            using (FileStream fs = new FileStream(outputFileName, FileMode.Create))
+            using (FileStream fs = new FileStream(outputFileName, FileMode.Create, FileAccess.Write, FileShare.Read))
             {
                 fs.Write(fontData, 0, fontData.Length);
             }
+            
+            Console.WriteLine("Decrypted font written to: " + outputFileName);
         }
     }
 }
