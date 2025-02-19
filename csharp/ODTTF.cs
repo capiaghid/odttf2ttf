@@ -12,12 +12,20 @@ namespace odttf2ttf
             using (FileStream fs = new FileStream(odttfFilePath, FileMode.Open))
             {
                 fontData = new byte[fs.Length];
-                fs.Read(fontData, 0, fontData.Length);
+                int dataRead = fs.Read(fontData, 0, fontData.Length);
+
+                if(dataRead < fontData.Length)
+                {
+                    throw new ApplicationException($"Failure in conversion: Only {dataRead} bytes were converted "
+                        + $"ant not the expected {fontData.Length} bytes!");
+                }
             }
 
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(odttfFilePath);
 
             string guid = fileNameWithoutExtension.Replace("-", "");
+
+            Console.WriteLine("Key found: " + guid);
 
             byte[] key = new byte[16];
             for (int i = 0; i < key.Length; i++)
@@ -30,6 +38,7 @@ namespace odttf2ttf
                 fontData[i] ^= key[i % key.Length];
             }
 
+            Console.WriteLine("Encryption complete");
             return fontData;
         }
     }
