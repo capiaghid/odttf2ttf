@@ -1,35 +1,38 @@
 ﻿using System;
-using System.IO;
 using System.Drawing.Text;
+using System.IO;
 
-public class TTF
+namespace odttf2ttf
 {
-    public static string GetFontName(byte[] fontData)
+    public static class TTF
     {
-        unsafe
+        public static string GetFontName(byte[] fontData)
         {
-            fixed (byte* ptr = fontData)
+            unsafe
             {
-                PrivateFontCollection fontCol = new PrivateFontCollection();
-                fontCol.AddMemoryFont((IntPtr)ptr, fontData.Length);
+                fixed (byte* ptr = fontData)
+                {
+                    PrivateFontCollection fontCol = new PrivateFontCollection();
+                    fontCol.AddMemoryFont((IntPtr)ptr, fontData.Length);
 
-                string fontName = fontCol.Families[0].Name;
+                    string fontName = fontCol.Families[0].Name;
 
-                fontCol.Dispose();
+                    fontCol.Dispose();
 
-                return fontName;
+                    return fontName;
+                }
             }
         }
-    }
 
-    public static void Save(byte[] fontData)
-    {
-        string fontName = GetFontName(fontData);
-        string outputFileName = fontName + ".ttf";
-
-        using (FileStream fs = new FileStream(outputFileName, FileMode.Create))
+        public static void Save(byte[] fontData)
         {
-            fs.Write(fontData, 0, fontData.Length);
+            string fontName = GetFontName(fontData);
+            string outputFileName = fontName + ".ttf";
+
+            using (FileStream fs = new FileStream(outputFileName, FileMode.Create))
+            {
+                fs.Write(fontData, 0, fontData.Length);
+            }
         }
     }
 }
